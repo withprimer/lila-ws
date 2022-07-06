@@ -1,5 +1,7 @@
 import com.typesafe.sbt.packager.docker._
 
+import NativePackagerHelper._
+
 name := "lila-ws"
 
 version := "3.0"
@@ -68,25 +70,24 @@ Compile / packageDoc / publishArtifact := false
 
 /* scalafmtOnCompile := true */
 
+// map in conf dir
+Universal / mappings ++= directory("conf")
+
+/* DOCKER OVERRIDES */
 
 // docker
-dockerBaseImage := "openjdk:11-jdk"
+dockerBaseImage := "openjdk:11-jre-slim-buster"
 dockerExposedPorts += 9664
-dockerPermissionStrategy := DockerPermissionStrategy.None
-dockerChmodType := DockerChmodType.UserGroupWriteExecute
-dockerAdditionalPermissions += (DockerChmodType.UserGroupWriteExecute, "/opt/docker/")
-daemonUserUid in Docker := None
-daemonUser in Docker    := "root"
 
+// use root as docker user (this is Docker's default)
+Docker / daemonUserUid := None
+Docker / daemonUser := "root"
 
+// filter out docker entry points so we can define them manually below
 dockerCommands := dockerCommands.value.filterNot {
-
-  // ExecCmd is a case class, and args is a varargs variable, so you need to bind it with @
   case ExecCmd("ENTRYPOINT", args @ _*) => true
   case ExecCmd("CMD",args @ _*) => true
-
-  // don't filter the rest; don't filter out anything that doesn't match a pattern
   case cmd                       => false
 }
 
-dockerCommands += Cmd("ENTRYPOINT", "/opt/docker/bin/lila-ws -Dconfig.file=app.conf")
+dockerCommands += Cmd("ENTRYPOINT", "/opt/docker/bin/lila-ws -Dconfig.file=conf/prod.conf")
