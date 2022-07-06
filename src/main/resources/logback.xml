@@ -11,6 +11,10 @@
     <appender-ref ref="STDOUT" />
   </appender>
 
+  <logger name="io.netty.handler" level="WARN" additivity="false">
+          <appender-ref ref="STDOUT"/>
+  </logger>
+
   <logger name="akka.event.slf4j.Slf4jLogger" level="WARN">
     <appender-ref ref="ASYNC"/>
   </logger>

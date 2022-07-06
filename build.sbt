@@ -1,6 +1,13 @@
+import com.typesafe.sbt.packager.docker._
+
+import NativePackagerHelper._
+
 name := "lila-ws"
 
 version := "3.0"
+
+//ensure builds use java version 11
+javacOptions ++= Seq("-source", "11", "-target", "11")
 
 lazy val `lila-ws` = (project in file("."))
   .enablePlugins(JavaAppPackaging)
@@ -62,3 +69,25 @@ Compile / doc / sources := Seq.empty
 Compile / packageDoc / publishArtifact := false
 
 /* scalafmtOnCompile := true */
+
+// map in conf dir
+Universal / mappings ++= directory("conf")
+
+/* DOCKER OVERRIDES */
+
+// docker
+dockerBaseImage := "openjdk:11-jre-slim-buster"
+dockerExposedPorts += 9664
+
+// use root as docker user (this is Docker's default)
+Docker / daemonUserUid := None
+Docker / daemonUser := "root"
+
+// filter out docker entry points so we can define them manually below
+dockerCommands := dockerCommands.value.filterNot {
+  case ExecCmd("ENTRYPOINT", args @ _*) => true
+  case ExecCmd("CMD",args @ _*) => true
+  case cmd                       => false
+}
+
+dockerCommands += Cmd("ENTRYPOINT", "/opt/docker/bin/lila-ws -Dconfig.file=conf/prod.conf")
