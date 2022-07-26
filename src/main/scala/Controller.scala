@@ -247,7 +247,11 @@ final class Controller(
       "ionic://localhost",     // ios
       "capacitor://localhost", // capacitor (ios next)
       "http://localhost",      // android
-      "http://localhost:8080"  // local app dev
+      "http://localhost:8080", // local app dev
+      // primer
+      "http://localhost:3000",
+      "https://staging.primer.com",
+      "https://primer.com"
     )
 
     def check(req: RequestHeader)(f: => Response): Response =
