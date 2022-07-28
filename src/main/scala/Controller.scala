@@ -251,7 +251,8 @@ final class Controller(
       // primer
       "http://localhost:3000",
       "https://staging.primer.com",
-      "https://primer.com"
+      "https://primer.com",
+      "https://review-web-primer-pr-2546.herokuapp.com"  
     )
 
     def check(req: RequestHeader)(f: => Response): Response =
