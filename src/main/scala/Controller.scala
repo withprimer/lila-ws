@@ -252,7 +252,7 @@ final class Controller(
       "http://localhost:3000",
       "https://staging.primer.com",
       "https://primer.com",
-      "https://review-web-primer-pr-2546.herokuapp.com"
+      "https://review-web-primer-pr-2546.herokuapp.com",
       // primer ios
       "primer://",
     )
